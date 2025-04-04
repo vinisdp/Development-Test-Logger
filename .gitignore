@@ -1,9 +1,9 @@
-# Build results
+# ⛔ Build results
 bin/
 obj/
 out/
 
-# Rider / VSCode / Visual Studio
+# 🛠 IDEs e configurações locais
 .vscode/
 .idea/
 *.user
@@ -11,7 +11,7 @@ out/
 *.userosscache
 *.sln.docstates
 
-# NuGet
+# 📦 NuGet
 *.nupkg
 *.snupkg
 packages/
@@ -19,29 +19,26 @@ packages/
 project.lock.json
 project.fragment.lock.json
 
-# ASP.NET
+# 🌐 ASP.NET settings (manter em local)
 appsettings.Development.json
 appsettings.Local.json
 appsettings.*.json
 
-# Logs
-*.log
+# 🧹 Arquivos temporários e cache
 *.tlog
 *.cache
 *.tmp
 *.bak
 
-# System files
+# 📁 Arquivos do sistema
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-
-# OS-specific
 .DS_Store
 *.swp
 
-# Test results
+# ✅ Testes
 TestResults/
 *.coverage
 *.coveragexml
@@ -51,19 +48,20 @@ TestResults/
 *.vsp
 *.vspx
 
-# Others
+# 🔧 Arquivos compilados
 *.exe
 *.dll
 *.pdb
 *.mdb
 
-# dotnet tools
+# 🧰 Ferramentas do .NET
 .dotnet-tools.json
 
-# Environment files
+# 🔐 Variáveis de ambiente
 .env
 .env.*
 
-# Logs from your logger
+# 📄 Logs gerados pela aplicação
+app.log
+logger.log
 *.log.txt
-*.log
