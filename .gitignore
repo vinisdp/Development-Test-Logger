@@ -62,6 +62,6 @@ TestResults/
 .env.*
 
 # 📄 Logs gerados pela aplicação
-app.log
 logger.log
 *.log.txt
+*.log
