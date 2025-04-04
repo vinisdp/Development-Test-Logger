@@ -1,6 +1,0 @@
-2025-04-04 17:04:38 [Info] Aplicação iniciada.
-2025-04-04 17:04:38 [Warning] Alerta: possível sobrecarga no sistema.
-2025-04-04 17:04:38 [Error] Erro crítico detectado!
-2025-04-04 17:04:38 [Error] [EXCEPTION] DivideByZeroException: Attempted to divide by zero.
-StackTrace:
-   at Program.Main(String[] args) in C:\Users\Vinicius\Documents\GitHub\LoggerApp\Program.cs:line 15
