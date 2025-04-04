@@ -1,0 +1,68 @@
+# Build results
+bin/
+obj/
+out/
+
+# Rider / VSCode / Visual Studio
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+# ASP.NET
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+
+# Logs
+*.log
+*.tlog
+*.cache
+*.tmp
+*.bak
+
+# System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# OS-specific
+.DS_Store
+*.swp
+
+# Test results
+TestResults/
+*.coverage
+*.coveragexml
+*.testsettings
+*.vsmdi
+*.psess
+*.vsp
+*.vspx
+
+# Others
+*.exe
+*.dll
+*.pdb
+*.mdb
+
+# dotnet tools
+.dotnet-tools.json
+
+# Environment files
+.env
+.env.*
+
+# Logs from your logger
+*.log.txt
