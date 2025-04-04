@@ -66,3 +66,4 @@ TestResults/
 
 # Logs from your logger
 *.log.txt
+*.log
