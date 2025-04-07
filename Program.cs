@@ -6,21 +6,27 @@
         string source = "LoggerApp"; // Nome do serviço ou aplicação
         string httpAddress = "http://localhost:5000"; // Endereço HTTP do serviço
 
-        Logger logger = new Logger(source, httpAddress, logFilePath: "app.log", minLevel: LogLevel.Info);
+        Logger logger = new Logger(source, httpAddress, logFilePath: "app.log", minLevel: LogLevel.Debug);
 
-        await logger.Info("Aplicação iniciada.", traceKey);
-        await logger.Debug("Este log não será salvo pois o nível mínimo é Info.", traceKey);
-        await logger.Warning("Alerta: possível sobrecarga no sistema.", traceKey);
-        await logger.Error("Erro crítico detectado!", traceKey);
+        // Criar várias tarefas concorrentes de logging
+        var tasks = new List<Task>();
 
-        try
+        for (int i = 0; i < 10; i++)
         {
-            int x = 0;
-            int y = 10 / x;
+            int taskId = i;
+            tasks.Add(Task.Run(async () =>
+            {
+                string localTraceKey = Guid.NewGuid().ToString();
+                await logger.Debug($"[Task {taskId}] Debug log", localTraceKey);
+                await logger.Info($"[Task {taskId}] Info log", localTraceKey);
+                await logger.Warning($"[Task {taskId}] Warning log", localTraceKey);
+                await logger.Error($"[Task {taskId}] Error log", localTraceKey);
+            }));
         }
-        catch (Exception ex)
-        {
-            await logger.Error(ex, traceKey);
-        }
+
+        // Aguardar todas as tarefas terminarem
+        await Task.WhenAll(tasks);
+
+        Console.WriteLine("✅ Todos os logs foram registrados de forma assíncrona.");
     }
 }
