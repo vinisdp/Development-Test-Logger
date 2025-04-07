@@ -1,23 +1,25 @@
 # 📝 LoggerApp
 
-Um **logger assíncrono** simples e extensível em **C#**, com suporte a múltiplos níveis de log, escrita em arquivo e informações úteis sobre o ambiente da aplicação.
+Um **logger assíncrono** leve e extensível em **C#**, com suporte a `traceKey`, múltiplos níveis de log e identificação da origem do serviço.
+
+A lightweight and extensible **asynchronous logger** in **C#**, with support for `traceKey`, multiple log levels, and service source identification.
 
 ---
 
-## 🚀 Funcionalidades
+## 🌍 Idiomas | Languages
 
-- ✅ **Log assíncrono** com controle de concorrência usando `SemaphoreSlim`
-- ✅ Suporte a múltiplos **níveis de log**: `Debug`, `Info`, `Warning`, `Error`
-- ✅ Registro de **exceções** com stack trace
-- ✅ Definição de **nível mínimo de log**
-- ✅ Captura de informações do sistema:
-  - Sistema operacional
-  - Nome do usuário
-  - Nome da máquina
-  - Endereço IP local
-- ✅ Suporte a `traceKey` para rastreamento entre serviços
-- ✅ Identificação do **source** (serviço de origem) do log
-- ✅ Informações de chamada: nome do método, arquivo e linha
+- 🇧🇷 [Português](#-funcionalidades)
+- 🇺🇸 [English](#-features)
+
+---
+
+## ✅ Funcionalidades
+
+- Log assíncrono com `SemaphoreSlim`
+- Suporte a múltiplos níveis: `Debug`, `Info`, `Warning`, `Error`
+- Registro com `traceKey` para rastreamento de requisições
+- Identificação do `source` (serviço de origem)
+- Escrita em arquivo com nome baseado na data
 
 ---
 
@@ -25,14 +27,45 @@ Um **logger assíncrono** simples e extensível em **C#**, com suporte a múltip
 
 ```csharp
 var traceKey = Guid.NewGuid().ToString();
-var logger = new Logger(source: "MinhaAplicacao", logFilePath: ".log", minLevel: LogLevel.Info);
+var logger = new Logger(source: "MinhaAplicacao");
 
-// Exemplos de log
 await logger.Info("Aplicação iniciada", traceKey);
-await logger.Warning("Aviso: uso elevado de memória", traceKey);
-await logger.Error("Erro crítico detectado", traceKey);
+await logger.Warning("Aviso: consumo elevado", traceKey);
+await logger.Error("Erro grave detectado", traceKey);
 
-// Tratamento de exceção
+// Log de exceção
+try
+{
+    int x = 0;
+    int y = 10 / x;
+}
+catch (Exception ex)
+{
+    await logger.Error(ex, traceKey);
+}
+
+
+## ✅ Features
+
+- Asynchronous logging using `SemaphoreSlim`
+- Supports multiple levels: `Debug`, `Info`, `Warning`, `Error`
+- Logging with `traceKey` for request tracing
+- Identification of the `source` (originating service)
+- File writing with date-based log filename
+
+---
+
+## 💻 How to Use
+
+```csharp
+var traceKey = Guid.NewGuid().ToString();
+var logger = new Logger(source: "MyApplication");
+
+await logger.Info("Application started", traceKey);
+await logger.Warning("Warning: high resource usage", traceKey);
+await logger.Error("Critical error detected", traceKey);
+
+// Exception logging
 try
 {
     int x = 0;
