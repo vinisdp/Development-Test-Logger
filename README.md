@@ -42,7 +42,7 @@ try
 catch (Exception ex)
 {
     await logger.Error(ex, traceKey);
-}
+}```
 
 
 ## ✅ Features
