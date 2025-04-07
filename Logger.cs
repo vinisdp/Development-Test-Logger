@@ -19,11 +19,13 @@ public class Logger
     private readonly string _logFilePath;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
     private readonly string _source;
+    private readonly string _httpAddress;
     private LogLevel _minLevel;
 
-    public Logger(string source, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug)
+    public Logger(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug)
     {
         _source = source;
+        _httpAddress = httpAddress;
         _logFilePath = $"{DateTime.Now:yyyy-MM-dd}_{logFilePath}";
         _minLevel = minLevel;
     }
@@ -41,7 +43,7 @@ public class Logger
         if (level < _minLevel) return;
 
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string logMessage = $"{timestamp} [{level}] [traceKey: {traceKey}] [source: {_source}] {message}";
+        string logMessage = $"{timestamp} [{level}] [traceKey: {traceKey}] [source: {_source}] [http: {_httpAddress}] {message}";
 
         await _semaphore.WaitAsync();
         try
@@ -54,7 +56,6 @@ public class Logger
         }
     }
 
-    // Métodos por nível com traceKey
     public Task Debug(string msg, string traceKey) => LogAsync(msg, traceKey, LogLevel.Debug);
     public Task Info(string msg, string traceKey) => LogAsync(msg, traceKey, LogLevel.Info);
     public Task Warning(string msg, string traceKey) => LogAsync(msg, traceKey, LogLevel.Warning);
