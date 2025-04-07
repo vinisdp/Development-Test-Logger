@@ -14,7 +14,7 @@ internal class Program
         Logger.Instance.Configure(
             source: source,
             httpAddress: httpAddress,
-            logFilePath: "app.log",
+            logFilePath: ".log",
             minLevel: LogLevel.Debug,
             logToConsole: logToConsole
         );

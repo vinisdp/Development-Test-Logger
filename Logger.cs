@@ -31,7 +31,7 @@ public sealed class Logger
     {
         _source = source;
         _httpAddress = httpAddress;
-        _logFilePath = $"{DateTime.Now:yyyy-MM-dd}_{logFilePath}";
+        _logFilePath = $"log_{DateTime.Now:yyyy-MM-dd}{logFilePath}";
         _minLevel = minLevel;
         _logToConsole = logToConsole;
     }
