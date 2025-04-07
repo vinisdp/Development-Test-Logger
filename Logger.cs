@@ -49,6 +49,7 @@ public sealed class Logger
         try
         {
             await File.AppendAllTextAsync(_logFilePath, logMessage + Environment.NewLine);
+            Console.WriteLine(logMessage);
         }
         finally
         {
