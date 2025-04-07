@@ -6,7 +6,8 @@
         string source = "LoggerApp"; // Nome do serviço ou aplicação
         string httpAddress = "http://localhost:5000"; // Endereço HTTP do serviço
 
-        Logger logger = new Logger(source, httpAddress, logFilePath: "app.log", minLevel: LogLevel.Debug);
+        // Configura o singleton
+        Logger.Instance.Configure(source, httpAddress, logFilePath: "app.log", minLevel: LogLevel.Debug);
 
         // Criar várias tarefas concorrentes de logging
         var tasks = new List<Task>();
@@ -17,10 +18,10 @@
             tasks.Add(Task.Run(async () =>
             {
                 string localTraceKey = Guid.NewGuid().ToString();
-                await logger.Debug($"[Task {taskId}] Debug log", localTraceKey);
-                await logger.Info($"[Task {taskId}] Info log", localTraceKey);
-                await logger.Warning($"[Task {taskId}] Warning log", localTraceKey);
-                await logger.Error($"[Task {taskId}] Error log", localTraceKey);
+                await Logger.Instance.Debug($"[Task {taskId}] Debug log", localTraceKey);
+                await Logger.Instance.Info($"[Task {taskId}] Info log", localTraceKey);
+                await Logger.Instance.Warning($"[Task {taskId}] Warning log", localTraceKey);
+                await Logger.Instance.Error($"[Task {taskId}] Error log", localTraceKey);
             }));
         }
 

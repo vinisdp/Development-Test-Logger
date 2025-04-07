@@ -16,13 +16,19 @@ public enum LogLevel
 
 public class Logger
 {
-    private readonly string _logFilePath;
+    private static readonly Lazy<Logger> _instance = new(() => new Logger());
+    public static Logger Instance => _instance.Value;
+
+
+    private string _logFilePath;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
-    private readonly string _source;
-    private readonly string _httpAddress;
+    private string _source;
+    private string _httpAddress;
     private LogLevel _minLevel;
 
-    public Logger(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug)
+    private Logger() { }
+
+    public void Configure(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug)
     {
         _source = source;
         _httpAddress = httpAddress;
