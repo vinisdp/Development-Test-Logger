@@ -1,8 +1,8 @@
 # 📝 LoggerApp
 
-Um **logger assíncrono** leve e extensível em **C#**, com suporte a `traceKey`, múltiplos níveis de log e identificação da origem do serviço.
+Um **logger assíncrono** leve e thread-safe em **C#**, implementado com o padrão Singleton. Possui suporte a `traceKey`, múltiplos níveis de log e identificação do serviço de origem.
 
-A lightweight and extensible **asynchronous logger** in **C#**, with support for `traceKey`, multiple log levels, and service source identification.
+A lightweight and thread-safe **asynchronous logger** in **C#**, using the Singleton pattern. Supports `traceKey`, multiple log levels, and service source identification.
 
 ---
 
@@ -16,64 +16,84 @@ A lightweight and extensible **asynchronous logger** in **C#**, with support for
 ## ✅ Funcionalidades
 
 - Log assíncrono com `SemaphoreSlim`
+- Singleton: única instância de logger em toda a aplicação
 - Suporte a múltiplos níveis: `Debug`, `Info`, `Warning`, `Error`
-- Registro com `traceKey` para rastreamento de requisições
-- Identificação do `source` (serviço de origem)
-- Escrita em arquivo com nome baseado na data
+- Registro com `traceKey` para rastreamento
+- Identificação do serviço de origem (`source`)
+- Escrita em arquivo com nome baseado na data (`log_YYYY-MM-DD.txt`)
 
 ---
 
 ## 💻 Como usar
 
 ```csharp
-var traceKey = Guid.NewGuid().ToString();
-var logger = new Logger(source: "MinhaAplicacao");
+using System;
+using System.Threading.Tasks;
 
-await logger.Info("Aplicação iniciada", traceKey);
-await logger.Warning("Aviso: consumo elevado", traceKey);
-await logger.Error("Erro grave detectado", traceKey);
+class Program
+{
+    static async Task Main()
+    {
+        var traceKey = Guid.NewGuid().ToString();
 
-// Log de exceção
-try
-{
-    int x = 0;
-    int y = 10 / x;
+        Logger.Instance.Configure(source: "MinhaAplicacao", httpAddress: "http://localhost");
+
+        await Logger.Instance.Info("Aplicação iniciada", traceKey);
+        await Logger.Instance.Warning("Aviso: consumo elevado", traceKey);
+        await Logger.Instance.Error("Erro crítico detectado", traceKey);
+
+        try
+        {
+            int x = 0;
+            int y = 10 / x;
+        }
+        catch (Exception ex)
+        {
+            await Logger.Instance.Error(ex, traceKey);
+        }
+    }
 }
-catch (Exception ex)
-{
-    await logger.Error(ex, traceKey);
-}
+
 ```
-
-
 
 ## ✅ Features
 
 - Asynchronous logging using `SemaphoreSlim`
+- Singleton: only one logger instance throughout the application
 - Supports multiple levels: `Debug`, `Info`, `Warning`, `Error`
 - Logging with `traceKey` for request tracing
-- Identification of the `source` (originating service)
-- File writing with date-based log filename
+- Identification of the `source` (originating service) and `httpAddress`
+- File writing with date-based log filename (`log_YYYY-MM-DD.txt`)
 
 ---
 
 ## 💻 How to Use
 
 ```csharp
-var traceKey = Guid.NewGuid().ToString();
-var logger = new Logger(source: "MyApplication");
+using System;
+using System.Threading.Tasks;
 
-await logger.Info("Application started", traceKey);
-await logger.Warning("Warning: high resource usage", traceKey);
-await logger.Error("Critical error detected", traceKey);
+class Program
+{
+    static async Task Main()
+    {
+        var traceKey = Guid.NewGuid().ToString();
 
-// Exception logging
-try
-{
-    int x = 0;
-    int y = 10 / x;
+        Logger.Instance.Configure(source: "MyApplication", httpAddress: "http://localhost");
+
+        await Logger.Instance.Info("Application started", traceKey);
+        await Logger.Instance.Warning("Warning: high resource usage", traceKey);
+        await Logger.Instance.Error("Critical error detected", traceKey);
+
+        try
+        {
+            int x = 0;
+            int y = 10 / x;
+        }
+        catch (Exception ex)
+        {
+            await Logger.Instance.Error(ex, traceKey);
+        }
+    }
 }
-catch (Exception ex)
-{
-    await logger.Error(ex, traceKey);
-}
+```
