@@ -16,17 +16,18 @@ public sealed class Logger
     private static readonly Lazy<Logger> _instance = new(() => new Logger());
     public static Logger Instance => _instance.Value;
 
-    private string _logFilePath = $"log_{DateTime.Now:yyyy-MM-dd}.txt";
+    private string _logFilePath = $"log_{DateTime.Now:yyyy-MM-dd}.log";
     private readonly SemaphoreSlim _semaphore = new(1, 1);
     private string _source = "DefaultSource";
     private string _httpAddress = "http://localhost";
     private LogLevel _minLevel = LogLevel.Debug;
     private bool _logToConsole = false;
 
-    // Construtor privado para garantir Singleton
+    private const long MaxFileSizeBytes = 5 * 1024 * 1024; // 5MB
+
     private Logger() { }
 
-    public void Configure(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug, bool logToConsole = false)
+    public void Configure(string source, string httpAddress, string logFilePath = "app.log", LogLevel minLevel = LogLevel.Debug, bool logToConsole = false)
     {
         _source = source;
         _httpAddress = httpAddress;
@@ -50,15 +51,30 @@ public sealed class Logger
         await _semaphore.WaitAsync();
         try
         {
+            RotateLogFile();
+
             await File.AppendAllTextAsync(_logFilePath, logMessage + Environment.NewLine);
-            if (_logToConsole)
-            {
-                Console.WriteLine(logMessage);
-            }
+
+            if (_logToConsole) Console.WriteLine(logMessage);
         }
         finally
         {
             _semaphore.Release();
+        }
+    }
+
+    private void RotateLogFile()
+    {
+        if (!File.Exists(_logFilePath))
+            return;
+
+        var fileInfo = new FileInfo(_logFilePath);
+        if (fileInfo.Length >= MaxFileSizeBytes)
+        {
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            string backupFilePath = _logFilePath.Replace(".log", $"_{timestamp}.log");
+
+            File.Move(_logFilePath, backupFilePath);
         }
     }
 

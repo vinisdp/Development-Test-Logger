@@ -6,12 +6,11 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        string traceKey = Guid.NewGuid().ToString(); // Gerando um traceKey único
-        string source = "LoggerApp"; // Nome do serviço ou aplicação
-        string httpAddress = "http://localhost:5000"; // Endereço HTTP do serviço
+        string traceKey = Guid.NewGuid().ToString();
+        string source = "LoggerApp";
+        string httpAddress = "http://localhost:5000";
         bool logToConsole = false;
 
-        // Configura o singleton
         Logger.Instance.Configure(
             source: source,
             httpAddress: httpAddress,
@@ -20,7 +19,6 @@ internal class Program
             logToConsole: logToConsole
         );
 
-        // Criar várias tarefas concorrentes de logging
         var tasks = new List<Task>();
 
         for (int i = 0; i < 10; i++)
@@ -36,7 +34,6 @@ internal class Program
             }));
         }
 
-        // Aguardar todas as tarefas terminarem
         await Task.WhenAll(tasks);
 
         Console.WriteLine("✅ Todos os logs foram registrados de forma assíncrona.");
