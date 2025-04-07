@@ -21,16 +21,18 @@ public sealed class Logger
     private string _source = "DefaultSource";
     private string _httpAddress = "http://localhost";
     private LogLevel _minLevel = LogLevel.Debug;
+    private bool _logToConsole = false;
 
     // Construtor privado para garantir Singleton
     private Logger() { }
 
-    public void Configure(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug)
+    public void Configure(string source, string httpAddress, string logFilePath = "log.txt", LogLevel minLevel = LogLevel.Debug, bool logToConsole = false)
     {
         _source = source;
         _httpAddress = httpAddress;
         _logFilePath = $"{DateTime.Now:yyyy-MM-dd}_{logFilePath}";
         _minLevel = minLevel;
+        _logToConsole = logToConsole;
     }
 
     public void SetMinimumLevel(LogLevel level)
@@ -49,7 +51,10 @@ public sealed class Logger
         try
         {
             await File.AppendAllTextAsync(_logFilePath, logMessage + Environment.NewLine);
-            Console.WriteLine(logMessage);
+            if (_logToConsole)
+            {
+                Console.WriteLine(logMessage);
+            }
         }
         finally
         {

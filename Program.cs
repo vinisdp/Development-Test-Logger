@@ -1,13 +1,24 @@
-﻿internal class Program
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+internal class Program
 {
     private static async Task Main(string[] args)
     {
         string traceKey = Guid.NewGuid().ToString(); // Gerando um traceKey único
         string source = "LoggerApp"; // Nome do serviço ou aplicação
         string httpAddress = "http://localhost:5000"; // Endereço HTTP do serviço
+        bool logToConsole = true;
 
         // Configura o singleton
-        Logger.Instance.Configure(source, httpAddress, logFilePath: "app.log", minLevel: LogLevel.Debug);
+        Logger.Instance.Configure(
+            source: source,
+            httpAddress: httpAddress,
+            logFilePath: "log.txt",
+            minLevel: LogLevel.Debug,
+            logToConsole: logToConsole
+        );
 
         // Criar várias tarefas concorrentes de logging
         var tasks = new List<Task>();
