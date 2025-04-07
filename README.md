@@ -19,8 +19,10 @@ A lightweight and thread-safe **asynchronous logger** in **C#**, using the Singl
 - Singleton: única instância de logger em toda a aplicação
 - Suporte a múltiplos níveis: `Debug`, `Info`, `Warning`, `Error`
 - Registro com `traceKey` para rastreamento
-- Identificação do serviço de origem (`source`)
-- Escrita em arquivo com nome baseado na data (`log_YYYY-MM-DD.txt`)
+- Identificação do serviço de origem (`source`) e endereço HTTP
+- Escrita em arquivo com nome baseado na data (`log_YYYY-MM-DD.log`)
+- 📁 Suporte a rotação de log (backup automático quando arquivo atinge tamanho limite)
+- 🖥️ Suporte opcional a saída no console
 
 ---
 
@@ -32,25 +34,39 @@ using System.Threading.Tasks;
 
 class Program
 {
-    static async Task Main()
+    private static async Task Main(string[] args)
     {
-        var traceKey = Guid.NewGuid().ToString();
+        string traceKey = Guid.NewGuid().ToString();
+        string source = "LoggerApp";
+        string httpAddress = "http://localhost:5000";
+        bool logToConsole = false;
 
-        Logger.Instance.Configure(source: "MinhaAplicacao", httpAddress: "http://localhost");
+        Logger.Instance.Configure(
+            source: source,
+            httpAddress: httpAddress,
+            logFilePath: "app.log",
+            minLevel: LogLevel.Debug,
+            logToConsole: logToConsole
+        );
 
-        await Logger.Instance.Info("Aplicação iniciada", traceKey);
-        await Logger.Instance.Warning("Aviso: consumo elevado", traceKey);
-        await Logger.Instance.Error("Erro crítico detectado", traceKey);
+        var tasks = new List<Task>();
 
-        try
+        for (int i = 0; i < 10; i++)
         {
-            int x = 0;
-            int y = 10 / x;
+            int taskId = i;
+            tasks.Add(Task.Run(async () =>
+            {
+                string localTraceKey = Guid.NewGuid().ToString();
+                await Logger.Instance.Debug($"[Task {taskId}] Debug log", localTraceKey);
+                await Logger.Instance.Info($"[Task {taskId}] Info log", localTraceKey);
+                await Logger.Instance.Warning($"[Task {taskId}] Warning log", localTraceKey);
+                await Logger.Instance.Error($"[Task {taskId}] Error log", localTraceKey);
+            }));
         }
-        catch (Exception ex)
-        {
-            await Logger.Instance.Error(ex, traceKey);
-        }
+
+        await Task.WhenAll(tasks);
+
+        Console.WriteLine("✅ Todos os logs foram registrados de forma assíncrona.");
     }
 }
 
@@ -58,12 +74,15 @@ class Program
 
 ## ✅ Features
 
-- Asynchronous logging using `SemaphoreSlim`
-- Singleton: only one logger instance throughout the application
-- Supports multiple levels: `Debug`, `Info`, `Warning`, `Error`
-- Logging with `traceKey` for request tracing
-- Identification of the `source` (originating service) and `httpAddress`
-- File writing with date-based log filename (`log_YYYY-MM-DD.txt`)
+- Asynchronous logging using `SemaphoreSlim`  
+- Singleton: only one logger instance throughout the application  
+- Supports multiple log levels: `Debug`, `Info`, `Warning`, `Error`  
+- Logging with `traceKey` for request tracing  
+- Identification of the service source (`source`) and HTTP address  
+- File writing with date-based filename (`log_YYYY-MM-DD.log`)  
+- 📁 Log rotation support (automatic backup when file reaches size limit)  
+- 🖥️ Optional support for console output  
+
 
 ---
 
@@ -75,25 +94,39 @@ using System.Threading.Tasks;
 
 class Program
 {
-    static async Task Main()
+    private static async Task Main(string[] args)
     {
-        var traceKey = Guid.NewGuid().ToString();
+        string traceKey = Guid.NewGuid().ToString();
+        string source = "LoggerApp";
+        string httpAddress = "http://localhost:5000";
+        bool logToConsole = false;
 
-        Logger.Instance.Configure(source: "MyApplication", httpAddress: "http://localhost");
+        Logger.Instance.Configure(
+            source: source,
+            httpAddress: httpAddress,
+            logFilePath: "app.log",
+            minLevel: LogLevel.Debug,
+            logToConsole: logToConsole
+        );
 
-        await Logger.Instance.Info("Application started", traceKey);
-        await Logger.Instance.Warning("Warning: high resource usage", traceKey);
-        await Logger.Instance.Error("Critical error detected", traceKey);
+        var tasks = new List<Task>();
 
-        try
+        for (int i = 0; i < 10; i++)
         {
-            int x = 0;
-            int y = 10 / x;
+            int taskId = i;
+            tasks.Add(Task.Run(async () =>
+            {
+                string localTraceKey = Guid.NewGuid().ToString();
+                await Logger.Instance.Debug($"[Task {taskId}] Debug log", localTraceKey);
+                await Logger.Instance.Info($"[Task {taskId}] Info log", localTraceKey);
+                await Logger.Instance.Warning($"[Task {taskId}] Warning log", localTraceKey);
+                await Logger.Instance.Error($"[Task {taskId}] Error log", localTraceKey);
+            }));
         }
-        catch (Exception ex)
-        {
-            await Logger.Instance.Error(ex, traceKey);
-        }
+
+        await Task.WhenAll(tasks);
+
+        Console.WriteLine("✅ Todos os logs foram registrados de forma assíncrona.");
     }
 }
 ```
